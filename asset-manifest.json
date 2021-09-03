@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/github.io/oneshotdash/static/css/main.e3c842e3.chunk.css",
-    "main.js": "/github.io/oneshotdash/static/js/main.9fb48020.chunk.js",
-    "main.js.map": "/github.io/oneshotdash/static/js/main.9fb48020.chunk.js.map",
+    "main.js": "/github.io/oneshotdash/static/js/main.7d597cad.chunk.js",
+    "main.js.map": "/github.io/oneshotdash/static/js/main.7d597cad.chunk.js.map",
     "runtime-main.js": "/github.io/oneshotdash/static/js/runtime-main.7ba5289b.js",
     "runtime-main.js.map": "/github.io/oneshotdash/static/js/runtime-main.7ba5289b.js.map",
     "static/css/2.8cebfa1f.chunk.css": "/github.io/oneshotdash/static/css/2.8cebfa1f.chunk.css",
@@ -27,6 +27,6 @@
     "static/css/2.8cebfa1f.chunk.css",
     "static/js/2.75dd1ff3.chunk.js",
     "static/css/main.e3c842e3.chunk.css",
-    "static/js/main.9fb48020.chunk.js"
+    "static/js/main.7d597cad.chunk.js"
   ]
 }
