@@ -50,8 +50,8 @@ const Cards = (props) => {
                     <div className='titles'>
                         <h2>Occupancy</h2>
                         <div>
-                        <h4>94 Vehicles Total</h4>
-                        <h4>23 Vehicles avg per hour</h4>
+                        <h4>{props.vhTotal} Total Vehicles</h4>
+                        <h4>{Math.floor(props.vhTotal / 24)} Vehicles avg per hour</h4>
                         </div>
                        
                     </div>
@@ -63,7 +63,7 @@ const Cards = (props) => {
                         <h2>Daily Spend</h2>
                     </div>
                     <div>
-                        <h1 id='enlarge_txt'>$2332.00</h1>
+                        <h1 id='enlarge_txt'>${props.total}</h1>
                     </div>
                 </div> :
                 ''}
@@ -105,7 +105,26 @@ const Cards = (props) => {
                         <form>
                             <input type='text' id='header-search' name='search'></input>
                         </form>
+                        <div className='listed_contents'> 
+                        <div className='live_visitors_scroll'>
+                            {
+                                props.data_.map((value, index)=>{
+                                   return(
+                                    <div id='driver_info'>
+                                        <div style={{width: '100%', display: 'flex', justifyContent: 'space-between'}}>
+                                            <div>{value.name}</div>
+                                            <div style={{color: 'red'}}>{value.et}</div>
+                                        </div>
+                                        <div>
+                                            {value.lp}
+                                        </div>
 
+                                    </div>
+                                   ) 
+                                })
+                            }
+                        </div>
+                        </div>
                     </div>
 
 

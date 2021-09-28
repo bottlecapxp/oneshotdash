@@ -29,7 +29,7 @@ const currentDate = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`
                         <Link  className='nav_link' to='/'>Dashboard</Link>
                         <Link  className='nav_link' to='/lot-management'>Lot Management</Link>
                         <Link className='nav_link' to='/notifications'>Notification Centre</Link>
-                        <Link className='nav_link' to='#'>Profile</Link>
+                        <Link className='nav_link' to='/profile'>Profile</Link>
                     </div>
                 </div> {/* End of header_wrapper */}
                 <div className='header_wrapper bottom_info'> 
