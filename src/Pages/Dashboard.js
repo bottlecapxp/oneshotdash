@@ -16,7 +16,7 @@ const [total, setTotal] = useState({
 })
 
 useEffect(()=>{
-fetch('https://osParking.pythonanywhere.com/today-visitors', {
+fetch(`https://osParking.pythonanywhere.com/today-visitors?lot=${props.match.params.lot}`, {
 method: 'GET',
 mode: 'cors',
 headers:{
@@ -26,6 +26,7 @@ headers:{
 }).then(response => response.json())
 .then(resp =>{
   if(!null){
+    console.log(resp)
     setTotal({
       total: resp.total, 
       vh_total: resp.counted, 
@@ -35,7 +36,6 @@ headers:{
 })
 }, [])
 
-console.log(total.data)
   return (
     <div>
       <Header title={'Dashboard'}/>

@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import Header from '../Header/Header'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css';
@@ -12,6 +12,12 @@ import Minus from './../Assets/minus.svg'
 
 const Lot_Management = (props) => {
     const [value, setValue] = useState(new Date())
+    const [setDate, setSetDate] = useState({
+        setDate: new Date().toLocaleDateString()
+    })
+    const [newData, setNewData] = useState({
+        data: []
+    })
     const [hourlyIncrement, setHourlyIncrement] = useState(0)
     const [maxIncrement, setMaxIncrement] = useState(0)
 
@@ -30,23 +36,89 @@ const Lot_Management = (props) => {
             setHourlyIncrement( hourlyIncrement - 1)}
      }
     const onchange_ = data =>{
-        setValue(data)
-        console.log(data)
+        setValue(data) 
+        setSetDate({
+            setDate: data.toLocaleDateString()
+        })   
     }
+   
+        const onDelete = (id) =>{
+            fetch(`https://osParking.pythonanywhere.com/delete-schedules?id=${id}`, {
+                method: 'DELETE',
+                mode: 'cors',
+                headers: {
+                    'Access-Control-Allow-Origin':'*',
+                    'Content-Type': 'application/json'
+                },
+            }).then(response => response.json())
+                .then(data => {
+                    console.log('Response:', data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+                setTimeout(()=>{
+                    window.location.reload()
+                }, 300)
+        }
+    
     const onSubmission = e =>{
         e.preventDefault()
-        console.log({
+        const send_data = {
             'title': e.target.title.value, 
-            'startTime': `${e.target.startHour.value}:${e.target.startMin.value}${e.target.dn.value}`,
-            'endTime': `${e.target.endHour.value}:${e.target.endMin.value}${e.target.dn.value}`, 
-            'hourly_rate': e.target.hourlyRate.value,
-            'MaxRate': e.target.maxRate.value, 
-            'repeat': e.target.repeat.value
-        })
+            'date': setDate.setDate,
+            'start_time': `${e.target.startHour.value}:${e.target.startMin.value}${e.target.dn.value}`,
+            'exp_time': `${e.target.endHour.value}:${e.target.endMin.value}${e.target.dn.value}`, 
+            'rate_per_hr': e.target.hourlyRate.value,
+            'max_rate': e.target.maxRate.value, 
+            'repeats': e.target.repeat.value 
+        }
+        // console.log(send_data)
+        // The url need to implement a dynamic lot number possibly from the localstorage
+
+
+        fetch('https://osParking.pythonanywhere.com/schedules?lotnumber=1111', {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Access-Control-Allow-Origin':'*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(send_data)
+        }).then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+            setTimeout(()=>{
+                window.location.reload()
+            }, 1000)
     }
+    const location = localStorage.getItem('dashboard_lot')
+    useEffect(()=>{
+        fetch(`https://osParking.pythonanywhere.com/get-schedules?lotnumber=${location}`, {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+                'Access-Control-Allow-Origin':'*',
+                'Content-Type': 'application/json'
+            },
+        }).then(response => response.json())
+            .then(data => {
+                // console.log(data.data)
+                setNewData({
+                    data: data.data
+                })
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
 
+    }, [])
 
-
+console.log(setDate)
   return(
     <div>
     <Header title={'Set Rates'}/>
@@ -54,7 +126,35 @@ const Lot_Management = (props) => {
         <div className='management_holder'> 
         <div className='calendar_management'>
             <Calendar onChange={onchange_} value={value}/>
+            <h3 style={{textAlign:'left', width:'80%', marginBottom: '0px'}}>Registered Rates</h3>
+            <div id='rate_settings'> 
+            {
+                newData.data.map((value, index)=>{
+                    return(
+                        <div className='rates_card'>
+                            <div className='rate_card_header'>
+                            <div>{value.title}</div>
+                            <div>Set For: {value.date}</div>
+                            </div>
+                            <div className='rates_content'> 
+                            <div>Starts: {value.start_time}</div>
+                            <div>Expires: {value.exp_time}</div>
+                            <div>Rate per hr: ${value.rpr}</div>
+                            <div>Maximum rate: ${value.max_rate}</div>
+                            <div>Repeats: {value.repeats}</div>
+                            </div>
+                            <div className='rate_delete'>
+                                <div className='delete_icon' onClick={()=>{onDelete(value.id)}}>Delete</div>
+                            </div>
+                        </div>
+                    )
+                })
+            }       
+            </div>
+
+
         </div>
+       
         <form onSubmit={onSubmission} className='setting_management'>
             <div className='search_wrapper'>
             <h4 className='rate_titles'>Title</h4>
@@ -117,23 +217,23 @@ const Lot_Management = (props) => {
             <div className='rate_container'>
                 <div className='repeat_selection_container'>
                     
-                    <input className='radio_btn' type='radio' id='daily' name='repeat' value='never' />
+                    <input className='radio_btn' type='radio' id='daily' name='repeat' defaultValue='never' />
                     <label htmlFor='daily'>Never</label>
                 </div>
                 <div className='repeat_selection_container'>     
-                    <input className='radio_btn' type='radio' id='daily' name='repeat' value='daily' />
+                    <input className='radio_btn' type='radio' id='daily' name='repeat' defaultValue='daily' />
                     <label htmlFor='daily'>Daily</label>
                 </div>
                 <div className='repeat_selection_container'>         
-                    <input className='radio_btn' type='radio' id='daily' name='repeat' value='weekly' />
+                    <input className='radio_btn' type='radio' id='daily' name='repeat' defaultValue='weekly' />
                     <label htmlFor='daily'>Weekly</label>
                 </div>
                 <div className='repeat_selection_container'>
-                    <input className='radio_btn' type='radio' id='daily' name='repeat' value='monthly' />
+                    <input className='radio_btn' type='radio' id='daily' name='repeat' defaultValue='monthly' />
                     <label htmlFor='daily'>Monthly</label>
                 </div>
                 <div className='repeat_selection_container'>
-                    <input className='radio_btn' type='radio' id='daily' name='repeat' value='annualy' />
+                    <input className='radio_btn' type='radio' id='daily' name='repeat' defaultValue='annually' />
                     <label htmlFor='daily'>Annual</label>
                 </div>
             </div>

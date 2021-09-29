@@ -1,4 +1,5 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
+import { useHistory } from "react-router-dom"
 import Header from '../Header/Header'
 
 /**
@@ -7,10 +8,36 @@ import Header from '../Header/Header'
 **/
 
 const Profile = (props) => {
-    const lots = [1308, 1208, 1208, 1202, 1212]
+    const [location, setLocation] = useState({
+        data: []
+    })
+    const history = useHistory()
     const onSelection = (data) =>{
-        console.log(data)
+        localStorage.setItem('dashboard_lot', data.id)
+        localStorage.setItem('dashboard_lot_name', data.name)
+        history.push(`/dash/${data.id}`)
     }
+    const onChange_ = (e) =>{
+        console.log(e.target.value)
+    }
+
+    useEffect(()=>{
+        fetch('https://osParking.pythonanywhere.com/get-location', {
+            method: 'GET', 
+            mode: 'cors', 
+            headers: {
+                'Access-Control-Allow-Origin': '*', 
+                'Content_Type': 'application/json'
+            }
+        })
+        .then(resp => resp.json())
+        .then(data =>{
+            setLocation({
+                data: data.data
+            })
+        })
+    }, [])
+
   return(
     <div>
         <Header title={'Hello Dan!'}/>
@@ -18,16 +45,12 @@ const Profile = (props) => {
         <section>
             <div id='overview_holder'>
             <h1>Quick Overview</h1>
-            <select id='profile_select_lot'>
-                <option>
-                    Lot# 14616
-                </option>
-                <option>
-                    Lot# 146134
-                </option>
-                <option>
-                    Lot# 146221
-                </option>
+            <select id='profile_select_lot' onChange={onChange_}>
+                {
+                    location.data.map((value, index)=>{
+                        return <option value={value.id} key={index}>{value.id}</option>
+                    })
+                }
             </select>
             </div>
            
@@ -52,8 +75,13 @@ const Profile = (props) => {
                 <input type='text' id='search_bar' name='search' value='Search...' />
                 <div className='lots_dash_scroll'>
                 {
-                    lots.map((data)=>{
-                        return <div className='card profile_dash_selection' onClick={()=>{onSelection(data)}}>{data}</div>
+                    location.data.map((data, index)=>{
+                        return (
+                            <div className='card profile_dash_selection' onClick={()=>{onSelection(data)}}>
+                            <div><strong>{data.name}</strong></div>
+                            <div>Lot id: {data.id}</div>
+                            </div>
+                            )
                     })
                 }
                 </div>

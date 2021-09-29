@@ -11,7 +11,8 @@ import { Link } from 'react-router-dom'
 const Header = (props) => {
 const date = new Date()
 const currentDate = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`
-
+const lot = localStorage.getItem('dashboard_lot')
+const lot_name = localStorage.getItem('dashboard_lot_name')
 // useEffect(()=>{
 //     localStorage.set
 // })
@@ -26,10 +27,10 @@ const currentDate = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`
                         <img src={WhiteLogo} alt='logo'></img>
                     </div>
                     <div className='header_info_container nav'>
-                        <Link  className='nav_link' to='/'>Dashboard</Link>
+                        <Link  className='nav_link' to={`/dash/${lot}`}>Dashboard</Link>
                         <Link  className='nav_link' to='/lot-management'>Lot Management</Link>
                         <Link className='nav_link' to='/notifications'>Notification Centre</Link>
-                        <Link className='nav_link' to='/profile'>Profile</Link>
+                        <Link className='nav_link' to='/'>Profile</Link>
                     </div>
                 </div> {/* End of header_wrapper */}
                 <div className='header_wrapper bottom_info'> 
@@ -37,7 +38,7 @@ const currentDate = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`
                         <h1 id='title'>{props.title}</h1>
                     </div>
                     <div className='changeable_titles adjustment'> 
-                        <h4 id='title'>Halifax Lot: 12088</h4>
+                        <h4 id='title'>{`${lot_name}: ${lot}`}</h4>
                     </div>
                     <div className='changeable_titles adjustment'> 
                         <h4  id='title'>{currentDate}</h4>
